@@ -14,7 +14,7 @@ const resolvers = {
       return await User.find();
     },
     user: async (parent, { username }) => {
-      return getSingleUser(username);
+      return await getSingleUser(username);
     },
   },
 
@@ -37,7 +37,19 @@ const resolvers = {
       // Return an `Auth` object that consists of the signed token and user's information
       return { token, user };
     },
-    addUser: async (parent, { username, password }) => {},
+    addUser: async (parent, { username, password }) => {
+      const user = createUser({ username, password });
+      return user;
+    },
+
+    saveBook: async (parent, { username, body }) => {
+      const book = await saveBook({ username, body });
+      return book;
+    },
+    deleteBook: async (parent, { username, bookId }) => {
+      const book = await deleteBook(username, bookId);
+      return book;
+    },
   },
 };
 module.exports = resolvers;
