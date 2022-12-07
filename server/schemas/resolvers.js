@@ -13,29 +13,15 @@ const resolvers = {
     users: async () => {
       return await User.find();
     },
-    user: async (parent, { username }) => {
+    me: async (parent, { username }) => {
       return await getSingleUser(username);
     },
   },
 
   Mutation: {
     login: async (parent, { email, password }) => {
-      // Look up user by the provided email address. Since the `email` is unique
-      const user = await User.findOne({ email });
-
-      if (!user) {
-        throw new AuthenticationError("No user found with this email address");
-      }
-      // If there is a user found, execute the `isCorrectPassword`
-      // instance method and check if the correct password was provided
-      const correctPw = await user.isCorrectPassword(password);
-      if (!correctPw) {
-        throw new AuthenticationError("Incorrect credentials");
-      }
-      // If email and password, sign user into the application with a JWT
-      const token = signToken(user);
-      // Return an `Auth` object that consists of the signed token and user's information
-      return { token, user };
+      const log = await login(email, password);
+      return log;
     },
     addUser: async (parent, { username, password }) => {
       const user = createUser({ username, password });
